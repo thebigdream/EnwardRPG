@@ -2,7 +2,7 @@
   "name": "my-app",
   "version": "0.0.0",
   "dependencies": {
-    "discord.js": "^14.7.1",
+    "discord.js": "^14.11.0",
     "fs": "^0.0.1-security",
     "i": "^0.3.7",
     "novelapi": "^1.0.4",

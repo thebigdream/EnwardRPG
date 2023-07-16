@@ -90,17 +90,18 @@ client.on("messageCreate", async (message) => {
     // If no message, don't bother
     if (!message) return
 
-    // Sanitise nicknames/usernames TODO: fix this after recent API update
-    if (message.member.nickname == null) message.member.nickname = await sanitise(message.member.user.username); //if no server nick, use username as nick and sanitise
+    // Log user nickname, use username if none available
+    if (message.guild.members.cache.get(message.author.id).nickname) message.member.nickname = sanitise(message.guild.members.cache.get(message.author.id).nickname)
+        else sanitise(message.member.nickname = message.member.user.username) 
 
     try { message.embeds[0].description.length > 1, message.content = message.embeds[0].description, message.member.nickname = 'System' } catch { } //try to make embed description message.content
         messages.push({ "id":message.id, "parent":message.reference, "time":message.createdTimestamp, "author":message.member.nickname, "content":sanitise(message.content) }) //push latest message to messages array
         if ((message.channel.id == channel) && (!message.author.bot) && ((message.content.includes('1068439682460942407') || message.mentions.has(client.user)))) { //if message is in main channel, doesn't come from bot, includes or mentions bot
-        
+
         // If player doesn't yet exist, create a node for them
         if (!world.nodes.some(node => node.name === message.member.user.username)) world.nodes.push(generateNode(message.member.user.username, 'player', 50, 50, 'Sigurdistan', null))
 
-        // Find player
+        // Log player for future interactions
         var playerIndex = world.nodes.findIndex(node => node.name == message.member.user.username)
 
         // Give brahcoin for interaction
@@ -354,6 +355,7 @@ client.on("messageCreate", async (message) => {
             // Enter character description, then chat history, then prime their latest response
             prompt = prompt.join("\n")
             prompt = prompt.replace(/Enward:/g, character.name + ':')
+            //await botMember.setNickname('enward')
             prompt = '[' + character.description + ']\n' + prompt + '\n' + character.name + '[replying to ' + message.member.nickname + ']:'
 
             //console.clear()

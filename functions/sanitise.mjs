@@ -52,9 +52,9 @@ export function sanitise(str) {
         // Replace pedo with Pedro
         str = str.replace(/pedo/g, 'Pedro');
 
-        // Replace pedo with Pedro
+        // Replace r-word with RAM RANCH
         str = str.replace(/retard/g, 'RAM RANCH');
 
-    } catch { 'Failed to sanitise' }
+    } catch { }
     return str
 }
