@@ -28,10 +28,10 @@ export async function generateWorld(ids) {
         world.nodes.push(businesses[i])
     }
 
-    // Generate NPCs
-    var NPCs = await list("[Characters you'd find in a city]Scheming Businessman,Police Officer Fresh From the Academy,Opinionated Pizza Shop Owner,Overworked Delivery Driver,Expert Barista,Civilian,Highly Efficient Traffic Controller,Just a Man,Woman out for a Walk,Exotic Dancer,Celebrity Who You Can't Recall the Name Of,Former President,Shop Assistant,Finely Dressed Mafioso,Trucker Chatting to a Friend,[Characters you'd find in a forest]Elven Archer,Gnome Explorer,Living Mushroom Creature,Alchemist Witch,Shady Ranger,Wandering Trader Who Sells Beads,Grizzled Mountain Man,Centaur,Monk Trying To Become Enlightened,[Characters you'd find in a military base]Patrolling Soldier,Cagey Sniper,Cook Who Is Busy,Desparate Prisoner,Guard (Private Company),Visiting Diplomat,5-Star General,Bored Admin Clerk,Disinterested Construction Worker,[Characters you'd find in a " + world.name + "]",random.int(6,8))
-    for (var i = 0; i < NPCs.length; i++) {
-        world.nodes.push(await generateNode(sanitise(NPCs[i]), 'NPC', 250, 500, world.name, null))
+    // Generate characters
+    var characters = await list("[Characters you'd find in a city]Scheming Businessman,Police Officer Fresh From the Academy,Opinionated Pizza Shop Owner,Overworked Delivery Driver,Expert Barista,Civilian,Highly Efficient Traffic Controller,Just a Man,Woman out for a Walk,Exotic Dancer,Celebrity Who You Can't Recall the Name Of,Former President,Shop Assistant,Finely Dressed Mafioso,Trucker Chatting to a Friend,[Characters you'd find in a forest]Elven Archer,Gnome Explorer,Living Mushroom Creature,Alchemist Witch,Shady Ranger,Wandering Trader Who Sells Beads,Grizzled Mountain Man,Centaur,Monk Trying To Become Enlightened,[Characters you'd find in a military base]Patrolling Soldier,Cagey Sniper,Cook Who Is Busy,Desparate Prisoner,Guard (Private Company),Visiting Diplomat,5-Star General,Bored Admin Clerk,Disinterested Construction Worker,[Characters you'd find in a " + world.name + "]",random.int(6,8))
+    for (var i = 0; i < characters.length; i++) {
+        world.nodes.push(await generateNode(sanitise(characters[i]), 'character', 250, 500, world.name, null))
     }
 
     // Generate landmarks
