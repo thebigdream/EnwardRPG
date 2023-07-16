@@ -188,6 +188,59 @@ client.on("messageCreate", async (message) => {
 
             replyUser(message, await generateEmbed(world.nodes[itemIndex].name, "You sell `" + world.nodes[itemIndex].name +'` for `' + world.nodes[itemIndex].ḇ + 'ḇ`.', colors.success), true)
         }
+
+        // Fight a node
+        else if (message.content.includes('!fight')) {
+            var searchId = message.content.split('!fight|')[1]
+            var actions = await list('slap,attack,pound,playfully slap,hit,bang,permanently maim,demoralise,hurt,strike a blow against,degrade,crush,assault,torture,harass,trip,terrorise,inflict damage upon,', 12)
+                console.log(actions)
+                console.log(actions.length)
+            var actionLog = ""
+            var playerItems = []
+            var nodeItems = []
+            var attackerHP = 10
+            var defenderHP = 10
+
+            // Search for matching node, return if doesn't exist 
+            var nodeIndex = world.nodes.findIndex(node => node.id === searchId)
+                if (itemIndex === -1) {
+                    replyUser(message, await generateEmbed('Error', '`#' + searchId + '` not found.', colors.alert), true)
+                    return
+                }
+
+            // Check that player has > 0 items
+            var playerItemsCount = world.nodes.filter(node => node.owner === world.nodes[playerIndex].id).length
+                if (playerItemsCount == 0) {
+                    replyUser(message, await generateEmbed('Error', 'You need at least one item to initiate a fight.', colors.alert), true)
+                    return
+                }
+
+            // Log player items
+            world.nodes.forEach((node) => { if (node.owner == world.nodes[playerIndex].id) playerItems.push(node.name) })
+
+            // Generate description if not available
+            if (world.nodes[nodeIndex].description == null) world.nodes[nodeIndex].description = await generateDescription(world.nodes[nodeIndex])
+
+            // Generate node inventory if none available
+            if (!world.nodes.some(node => node.owner === world.nodes[nodeIndex].id)) {
+            var items = await list("[Fishing supplies. This is a fishing shop on the outskirts of town, selling a variety of rods and bait supplies. Items you'd find here include]Fishing Rod,Bait,Fresh Fish,Strong Net,Line,Fish Tank,Deluxe Travelling Bag,Fishing Book,Bobbler,Sunglasses,[Shady Opium Den. Nestled in the heart of a dimly lit alley, the Shady Opium Den exudes an air of mystery and allure, its smoke-filled rooms veiling secrets and whispered tales of forbidden pleasures. Items you'd find in its inventory include]Opium Pipe,Drug Baggy,Fine Oriental Decor,Drool,Incense Burner,Used Opium Lamp,Lounging Bed,Instruction Manual,[Necromancer. He exudes an air of sophisticated evil, his cloak swaying as if upheld by its own gravity. In his hand is a dark, wooden staff. Items you'd find in its inventory include]Forboding Potion,Shrivelled Body,Evil Wooden staff,Tattered Black robes,Fifty Gold Coins,Fake Eyeball,Gloves,Sense of Doom,Belt Containing Putrid Vials,[The Ancient Armoury. Nestled within the heart of a forgotten city, The Ancient Armoury stands as a solemn testament to a bygone era, its weathered stone walls and rusted iron gates guarding a treasure trove of battle-worn artifacts and whispered tales of valor and conquest. Items you'd find in its inventory include]Steel Battleaxe,Mace,Polished Knights Armour,Hound,Coat of Arms,Hammer,Quiver of Arrows,Map,Trusty Steed,[Jason's Jeans. Nestled in a quaint corner of town, 'Jason's Jeans' emanates a timeless charm with its rustic storefront adorned with faded denim patches, inviting passersby to step into a denim lover's haven, where rows upon rows of meticulously displayed jeans tell stories of style, comfort, and authenticity. Items you'd find in its inventory include]Pair of Jeans,Quality Shirt,Boat Shoes,Fake Leather Boots,Beanie,Wide-brimmed Hat,Torn Jeans,Rockstar Jeans,Shorts,[President. She stares through you as if totally unaware of your presence. She wears a flashy blue suit and holds a clipboard and pen. Items in their inventory include]Flashy Business Suit,Pen and Clipboard,Glasses,Code to Nuclear Bombs,Cellular Phone,Line of Cocaine,Briefcase,[Eastville Eatery. It beckons with its vibrant ambiance, offering a culinary haven where the tantalizing aromas of diverse cuisines mingle harmoniously, promising a gastronomic journey for every palate. Items you'd find in its inventory include]Recently Roasted Chicken,Potato Gems,Sausage and Eggs,Coca Cola,Deep Fried Fish,Burger,Mars Bar,Pizza,[ " + world.nodes[nodeIndex].name + ". " + world.nodes[nodeIndex].description + "Items you'd find in its inventory include]", random.int(4,7))                
+                for(var i = 0; i < items.length; i++) {
+                    items[i] = await generateNode(items[i], 'item', 1, 50, world.name, world.nodes[nodeIndex].id)
+                        world.nodes.push(items[i]) // Store item in world with shop as owner
+                }
+            }
+
+            // Log node items
+            world.nodes.forEach((node) => { if (node.owner == world.nodes[nodeIndex].id) nodeItems.push(node.name) })
+
+            // Generate fight
+            for (var i = 0; i < 5; i++) {
+                actionLog += "\nYou " + actions[random.int(0,actions.length-1)] + " the " + world.nodes[nodeIndex].name + " with your " + playerItems[random.int(0,playerItems.length-1)]
+                actionLog += "\nThey " + actions[random.int(0,actions.length-1)] + " you with their " + nodeItems[random.int(0,nodeItems.length-1)]
+            }
+
+            replyUser(message, await generateEmbed('Fight with ' + world.nodes[nodeIndex].name, actionLog, colors.success), true)
+        }
         
         // Describe a node
         else if (message.content.includes('!describe|')) {
