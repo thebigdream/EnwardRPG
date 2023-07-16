@@ -263,7 +263,7 @@ client.on("messageCreate", async (message) => {
             var shopIndex = world.nodes.findIndex(node => node.id === searchId)
                 if (shopIndex === -1) return
 
-            // Generate description if not shopIndex
+            // Generate description if none exists
             if (world.nodes[shopIndex].description == null) world.nodes[shopIndex].description = await generateDescription(world.nodes[shopIndex])
 
             // Generate inventory if none available
@@ -365,7 +365,7 @@ client.on("messageCreate", async (message) => {
                 response = truncate(response, 2, 4)
                 response = sanitise(response)
                 response = ('(as ' + character.name + '): ') + response
-            replyUser(message, response, false) //emotify the response while sending
+            replyUser(message, response, false)
         }
     }
 })
