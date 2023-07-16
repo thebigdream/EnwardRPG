@@ -192,14 +192,14 @@ client.on("messageCreate", async (message) => {
         // Fight a node
         else if (message.content.includes('!fight')) {
             var searchId = message.content.split('!fight|')[1]
-            var actions = await list('slap,attack,pound,playfully slap,hit,bang,permanently maim,demoralise,hurt,strike a blow against,degrade,crush,assault,torture,harass,trip,terrorise,inflict damage upon,', 12)
+            var actions = await list('slap,attack,pound,playfully slap,hit,bang,undermine,leap upon,permanently maim,carefully strike,come down upon,demoralise,target,hurt,envelope,strike a blow against,degrade,crush,assault,torture,harass,trip,terrorise,inflict damage upon,', 12)
                 console.log(actions)
                 console.log(actions.length)
             var actionLog = ""
             var playerItems = []
             var nodeItems = []
-            var attackerHP = 10
-            var defenderHP = 10
+            var attackerHP = random.int(10,20)
+            var attackerHP = random.int(10,20)
 
             // Search for matching node, return if doesn't exist 
             var nodeIndex = world.nodes.findIndex(node => node.id === searchId)
@@ -216,7 +216,7 @@ client.on("messageCreate", async (message) => {
                 }
 
             // Log player items
-            world.nodes.forEach((node) => { if (node.owner == world.nodes[playerIndex].id) playerItems.push(node.name) })
+            world.nodes.forEach((node) => { if (node.owner == world.nodes[playerIndex].id) playerItems.push(node) })
 
             // Generate description if not available
             if (world.nodes[nodeIndex].description == null) world.nodes[nodeIndex].description = await generateDescription(world.nodes[nodeIndex])
@@ -231,12 +231,12 @@ client.on("messageCreate", async (message) => {
             }
 
             // Log node items
-            world.nodes.forEach((node) => { if (node.owner == world.nodes[nodeIndex].id) nodeItems.push(node.name) })
+            world.nodes.forEach((node) => { if (node.owner == world.nodes[nodeIndex].id) nodeItems.push(node) })
 
             // Generate fight
             for (var i = 0; i < 5; i++) {
-                actionLog += "\nYou " + actions[random.int(0,actions.length-1)] + " the " + world.nodes[nodeIndex].name + " with your " + playerItems[random.int(0,playerItems.length-1)]
-                actionLog += "\nThey " + actions[random.int(0,actions.length-1)] + " you with their " + nodeItems[random.int(0,nodeItems.length-1)]
+                actionLog += "\nYou " + actions[random.int(0,actions.length-1)] + " the " + world.nodes[nodeIndex].name + " with your " + playerItems[random.int(0,playerItems.length-1)].name
+                actionLog += "\nThey " + actions[random.int(0,actions.length-1)] + " you with their " + nodeItems[random.int(0,nodeItems.length-1)].name
             }
 
             replyUser(message, await generateEmbed('Fight with ' + world.nodes[nodeIndex].name, actionLog, colors.success), true)
