@@ -55,6 +55,9 @@ export function sanitise(str) {
         // Replace r-word with RAM RANCH
         str = str.replace(/retard/g, 'RAM RANCH');
 
+        // Replace rape with rap battle
+        str = str.replace(/rape/g, 'rap battle');
+
     } catch { }
     return str
 }

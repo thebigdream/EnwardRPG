@@ -21,7 +21,7 @@ export const rarities = [
     { name: 'uncommon', cutoff: 50 },
     { name: 'rare', cutoff: 75 },
     { name: 'epic', cutoff: 85 },
-    { name: 'relic', cutoff: 100 } 
+    { name: 'relic', cutoff: 99 } 
 ]
 
 // GLOBALS
@@ -238,7 +238,7 @@ client.on("messageCreate", async (message) => {
                 actionLog += "\nThey " + actions[random.int(0,actions.length-1)] + " you with their " + nodeItems[random.int(0,nodeItems.length-1)].name
             }
 
-            replyUser(message, await generateEmbed('Fight with ' + world.nodes[nodeIndex].name + " #" + world.nodes[nodeIndex].id, actionLog, colors.success), true)
+            replyUser(message, await generateEmbed('Fight with ' + world.nodes[nodeIndex].name + " #" + world.nodes[nodeIndex].id, sanitise(actionLog), colors.success), true)
         }
         
         // Describe a node
@@ -330,7 +330,7 @@ client.on("messageCreate", async (message) => {
             // Search for items with player as owner
             try { world.nodes.forEach((node) => { if (node.owner == world.nodes[playerIndex].id) result += "\n" + node.name + " `" + node.ḇ + "ḇ` `#" + node.id + "`" + " `" + getRarity(node.rarity) + "`" }) } catch { return }
 
-            replyUser(message, await generateEmbed(world.nodes[playerIndex].name, '**Wallet**\n`' + world.nodes[playerIndex].ḇ + 'ḇ`\n\n**Inventory**' + result, colors.success), true)
+            replyUser(message, await generateEmbed(world.nodes[playerIndex].name + " #" + world.nodes[playerIndex].id, '**Wallet**\n`' + world.nodes[playerIndex].ḇ + 'ḇ`\n\n**Inventory**' + result, colors.success), true)
         }
 
         // Show list of players
@@ -352,7 +352,7 @@ client.on("messageCreate", async (message) => {
             try { world.nodes.forEach((node) => { if (node.id == input[1]) result = node.name }) } catch { return }
             var useMessage = await useNode(result, input[2])
 
-            replyUser(message, await generateEmbed(result, useMessage, colors.success), true)
+            replyUser(message, await generateEmbed(result  + " #" + result.id, useMessage, colors.success), true)
         }
 
         // See current commands
