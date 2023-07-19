@@ -46,6 +46,8 @@ export function generateNode(name, type, minVal, maxVal, origin, owner, id) {
             origin:origin,
             owner:owner,
         })
+    // Increase value based on rarity
+    node.ḇ = Math.round(node.ḇ + (node.ḇ * (node.rarity / 25)))
     return node
 }
 
