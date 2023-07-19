@@ -121,14 +121,10 @@ client.on("messageCreate", async (message) => {
         
         // Buy item
         else if (message.content.includes('!buy')) {
-            var searchId = message.content.split('!buy|')[1]
 
-            // Search for matching  node, return if doesn't exist 
-            var itemIndex = world.nodes.findIndex(node => node.id === searchId)
-                if (itemIndex === -1) {
-                    replyUser(message, await generateEmbed('Error', '`#' + searchId + '` not found.', colors.alert), true)
-                    return
-                }
+            // Search for node, return if none found
+            var itemIndex = await validateInput(message, 2)
+            if (!itemIndex) return
 
             // Check that node isn't owned by a player
             if (world.nodes[itemIndex].owner != null) {
@@ -168,14 +164,10 @@ client.on("messageCreate", async (message) => {
 
         // Sell a node
         else if (message.content.includes('!sell')) {
-            var searchId = message.content.split('!sell|')[1]
 
-            // Search for matching node, return if doesn't exist 
-            var itemIndex = world.nodes.findIndex(node => node.id === searchId)
-                if (itemIndex === -1) {
-                    replyUser(message, await generateEmbed('Error', '`#' + searchId + '` not found.', colors.alert), true)
-                    return
-                }
+            // Search for node, return if none found
+            var itemIndex = await validateInput(message, 2)
+            if (!itemIndex) return
 
             // Check player owns item
             if (world.nodes[itemIndex].owner != world.nodes[playerIndex].id) {
@@ -192,7 +184,6 @@ client.on("messageCreate", async (message) => {
 
         // Fight a node
         else if (message.content.includes('!fight')) {
-            var searchId = message.content.split('!fight|')[1]
             var actions = await list('slap,attack,pound,playfully slap,hit,bang,undermine,leap upon,permanently maim,carefully strike,come down upon,demoralise,target,hurt,envelope,strike a blow against,degrade,crush,assault,torture,harass,trip,terrorise,inflict damage upon,', 16)
             var actionLog = ""
             var playerItems = []
@@ -200,12 +191,9 @@ client.on("messageCreate", async (message) => {
             var attackerHP = random.int(10,20)
             var attackerHP = random.int(10,20)
 
-            // Search for matching node, return if doesn't exist 
-            var nodeIndex = world.nodes.findIndex(node => node.id === searchId)
-                if (itemIndex === -1) {
-                    replyUser(message, await generateEmbed('Error', '`#' + searchId + '` not found.', colors.alert), true)
-                    return
-                }
+            // Search for node, return if none found
+            var nodeIndex = await validateInput(message, 2)
+            if (!nodeIndex) return
 
             // Check that player has > 0 items
             var playerItemsCount = world.nodes.filter(node => node.owner === world.nodes[playerIndex].id).length
@@ -243,11 +231,9 @@ client.on("messageCreate", async (message) => {
         
         // Describe a node
         else if (message.content.includes('!describe|')) {
-            var searchId = message.content.split('!describe|')[1]
-
-            // Search for matching node, return if doesn't exist
-            var nodeIndex = world.nodes.findIndex(node => node.id === searchId)
-                if (nodeIndex === -1) return
+            // Search for node, return if none found
+            var nodeIndex = await validateInput(message, 2)
+            if (!nodeIndex) return
 
             // Generate description if not available
             if (world.nodes[nodeIndex].description == null) world.nodes[nodeIndex].description = await generateDescription(world.nodes[nodeIndex])
@@ -285,11 +271,9 @@ client.on("messageCreate", async (message) => {
 
         // Initiate conversation with node
         else if (message.content.includes('!talk|')) {
-            var searchId = message.content.split('!talk|')[1]
-
-            // Search for matching node, return if doesn't exist
-            var nodeIndex = world.nodes.findIndex(node => node.id === searchId)
-                if (nodeIndex === -1) return
+            // Search for node, return if none found
+            var nodeIndex = await validateInput(message, 2)
+            if (!nodeIndex) return
 
             // Generate description if not available
             if (world.nodes[nodeIndex].description == null) world.nodes[nodeIndex].description = await generateDescription(world.nodes[nodeIndex])
@@ -299,12 +283,11 @@ client.on("messageCreate", async (message) => {
 
         // Open a shop inventory
         else if (message.content.includes('!shop|')) {
-            var searchId = message.content.split('!shop|')[1]
             var result = ""
 
-            // Search for matching node, return if doesn't exist
-            var shopIndex = world.nodes.findIndex(node => node.id === searchId)
-                if (shopIndex === -1) return
+            // Search for node, return if none found
+            var shopIndex = await validateInput(message, 2)
+            if (!shopIndex) return
 
             // Generate description if none exists
             if (world.nodes[shopIndex].description == null) world.nodes[shopIndex].description = await generateDescription(world.nodes[shopIndex])
@@ -319,7 +302,7 @@ client.on("messageCreate", async (message) => {
             }
 
             // Search for items with shop as owner
-            try { world.nodes.forEach((node) => { if (node.type == 'item' && node.owner == searchId) result += "\n" + node.name + " `" + node.ḇ + "ḇ` `#" + node.id + "`" + " `" + getRarity(node.rarity) + "`" }) } catch { return }
+            try { world.nodes.forEach((node) => { if (node.type == 'item' && node.owner == world.nodes[shopIndex].id) result += "\n" + node.name + " `" + node.ḇ + "ḇ` `#" + node.id + "`" + " `" + getRarity(node.rarity) + "`" }) } catch { return }
 
             replyUser(message, await generateEmbed(world.nodes[shopIndex].name + " #" + world.nodes[shopIndex].id, world.nodes[shopIndex].description + '\n\n**Inventory**' + result, colors.success), true)
         }
@@ -345,14 +328,14 @@ client.on("messageCreate", async (message) => {
 
         // Use a node
         else if (message.content.includes('!use|')) {
-            var input = message.content.split('|')
-            var result = ""
+            // Search for node, return if none found
+            var nodeIndex = await validateInput(message, 3)
+            if (!nodeIndex) return
 
-            // Search for items with shop as owner
-            try { world.nodes.forEach((node) => { if (node.id == input[1]) result = node.name }) } catch { return }
-            var useMessage = await useNode(result, input[2])
+            // Generate action
+            var useMessage = await useNode(world.nodes[nodeIndex].name, message.content.split(2))
 
-            replyUser(message, await generateEmbed(result  + " #" + result.id, useMessage, colors.success), true)
+            replyUser(message, await generateEmbed(world.nodes[nodeIndex].name + " #" + world.nodes[nodeIndex].id, useMessage, colors.success), true)
         }
 
         // See current commands
@@ -373,7 +356,7 @@ client.on("messageCreate", async (message) => {
             // Define 'system' character in case no character found
             var character = {
                 name:'Enward',
-                description:'Enward is a yellow guy with a devious smile and large, beckoning eyes.'
+                description:'Enward is a yellow guy with a mischevious smile and large, beckoning eyes.'
             }
 
             var exitLoop = false
@@ -397,7 +380,6 @@ client.on("messageCreate", async (message) => {
             // Enter character description, then chat history, then prime their latest response
             prompt = prompt.join("\n")
             prompt = prompt.replace(/Enward:/g, character.name + ':')
-            //await botMember.setNickname('enward')
             prompt = '[' + character.description + ']\n' + prompt + '\n' + character.name + '[replying to ' + message.member.nickname + ']:'
 
             //console.clear()
@@ -463,4 +445,25 @@ export function getId() {
   
     // Return the generated random ID
     return randomID
+}
+
+
+// Validate whether the input matches the expected length, and if targeted node exists
+async function validateInput(message, segments) {
+    var string = message.content.split('|')
+    var valid = true
+
+    // Validate length
+    if (string.length != segments) valid = false
+
+    // Validate node
+    var nodeIndex = world.nodes.findIndex(node => node.id === string[1])
+    if (nodeIndex === -1) valid = false
+
+    // If valid, return the node index, else return false
+    if (valid) return nodeIndex
+    else {
+        replyUser(message, await generateEmbed('Error', 'Invalid input.', colors.alert), true)
+        return false
+    } 
 }
