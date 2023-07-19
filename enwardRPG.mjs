@@ -8,7 +8,7 @@ import { generateEmbed, generate3ColumnEmbed } from "./functions/generateEmbed.m
 import { sanitise } from "./functions/sanitise.mjs"
 import { truncate } from "./functions/truncate.mjs"
 import { defaultPresetClio, defaultListPresetClio, defaultDescPresetClio } from "./functions/presets.mjs"
-import { players } from "./saves.mjs"
+import { world } from "./saves.mjs"
 import { summariseWorld, list, generateNode, generateDescription, getRarity, useNode } from "./functions/sysFunctions.mjs"
 import random  from 'random'
 import fs from 'fs'
@@ -28,12 +28,6 @@ export const rarities = [
 var channel = ""
 var messages = []
 var worldTimer = 0
-var world = {
-    name:'Sigurdistan',
-    description:'Home.',
-    type:'world',
-    nodes:[{"name":"Hottie","description":null,"type":"character","id":"A0000","rarity":62,"ḇ":356,"origin":"Sigurdistan","owner":null},{name: 'Cotton Candy Cave',description: null,type: 'landmark',id: 'G6339',rarity: 84,ḇ: 1770,origin: 'Sigurdistan',owner: null},{name: 'Haunted Forest',description: null,type: 'business',id: 'S1209',rarity: 55,ḇ: 1269,origin: 'Sigurdistan',owner: null}]
-}
 var commands = [
     { name: '!buy', description: 'buy the referenced node e.g. !buy|E5001' }, 
     { name: '!describe', description: 'describe the referenced node e.g. !describe|E5001' }, 
@@ -65,12 +59,17 @@ const client = new Client({
 client.on("ready", async () => {
     channel = client.channels.cache.get(channelID) // decide channel
     await channel.send({ embeds: [await generateEmbed('What\'s that?', 'A wild `Cunt` appears!', colors.info)] })
- });
+ })
 
 // EVENTS
 setInterval(async() => {
-    try { messages[messages.length-1].time } catch { return } //try to get latest message time, otherwise return
+    //Regularly update world save
+    fs.writeFileSync('./saves.mjs', 'export const world = ' + JSON.stringify(world), (err) => {
+        console.log('Data saved successfully.')
+    })
 
+    // Check if 15 minutes has passed, and if so, generate new world
+    try { messages[messages.length-1].time } catch { return } //try to get latest message time, otherwise return
     if (new Date() - worldTimer > 900000) { //if 15 minutes have elapsed since last shop, and can get latest message
 
         // Generate new world
@@ -107,11 +106,6 @@ client.on("messageCreate", async (message) => {
 
         // Give brahcoin for interaction
         world.nodes[playerIndex].ḇ++
-
-        // Save latest data
-        fs.writeFileSync("../NovelAPI/saves.mjs", 'export const players = \n' + JSON.stringify(players), err => {
-            if (err) { console.error(err) }
-        })
 
         if (message.content.includes('!test')) {
             var prompt = message.content.split('!test')
