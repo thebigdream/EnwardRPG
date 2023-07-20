@@ -184,16 +184,15 @@ client.on("messageCreate", async (message) => {
 
         // Fight a node
         else if (message.content.includes('!fight')) {
-            var actions = await list('slap,attack,pound,playfully slap,hit,bang,undermine,leap upon,permanently maim,carefully strike,come down upon,demoralise,target,hurt,envelope,strike a blow against,degrade,crush,assault,torture,harass,trip,terrorise,inflict damage upon,', 16)
             var actionLog = ""
-            var playerItems = []
-            var nodeItems = []
-            var attackerHP = random.int(10,20)
-            var attackerHP = random.int(10,20)
+            var playerHP = random.int(10,20)
+            var nodeHP = random.int(10,20)
+            var playerWeapons = []
+            var nodeWeapons = []
 
             // Search for node, return if none found
             var nodeIndex = await validateInput(message, 2)
-            if (!nodeIndex) return
+                if (!nodeIndex) return
 
             // Check that node isn't a player
             if (world.nodes[nodeIndex].type == 'player') {
@@ -209,7 +208,7 @@ client.on("messageCreate", async (message) => {
                 }
 
             // Log player items
-            world.nodes.forEach((node) => { if (node.owner == world.nodes[playerIndex].id) playerItems.push(node) })
+            world.nodes.forEach((node) => { if (node.owner == world.nodes[playerIndex].id) playerWeapons.push(node) })
 
             // Generate description if not available
             if (world.nodes[nodeIndex].description == null) world.nodes[nodeIndex].description = await generateDescription(world.nodes[nodeIndex])
@@ -224,15 +223,47 @@ client.on("messageCreate", async (message) => {
             }
 
             // Log node items
-            world.nodes.forEach((node) => { if (node.owner == world.nodes[nodeIndex].id) nodeItems.push(node) })
+            world.nodes.forEach((node) => { if (node.owner == world.nodes[nodeIndex].id) nodeWeapons.push(node) })
 
-            // Generate fight
-            for (var i = 0; i < 5; i++) {
-                actionLog += "\nYou " + actions[random.int(0,actions.length-1)] + " the " + world.nodes[nodeIndex].name + " with your " + playerItems[random.int(0,playerItems.length-1)].name
-                actionLog += "\nThey " + actions[random.int(0,actions.length-1)] + " you with their " + nodeItems[random.int(0,nodeItems.length-1)].name
+            // Provide icons to indicate damage
+            function decorateDamage(num) {
+                if (num == 0) return '🛡️'
+                if (num <= 5) return '❤️'
+                if (num <= 100) return '💔'
             }
 
-            replyUser(message, await generateEmbed('Fight with ' + world.nodes[nodeIndex].name + " #" + world.nodes[nodeIndex].id, sanitise(actionLog), colors.success), true)
+            // Generate fight
+            while (playerHP > 0 && nodeHP > 0) {
+                // Use a random item per combat action, and use its rarity to determine damage
+                var playerWeapon = playerWeapons[random.int(0,playerWeapons.length-1)]
+                var nodeWeapon = nodeWeapons[random.int(0,nodeWeapons.length-1)]
+                var playerDamage = random.int(0,Math.round(playerWeapon.rarity/10))
+                var nodeDamage = random.int(0,Math.round(nodeWeapon.rarity/10))
+
+                // Log damage
+                actionLog += "\nThey attack with their " + nodeWeapon.name + " for " + nodeDamage + decorateDamage(nodeDamage)
+                playerHP += -nodeDamage
+                    if (playerHP <= 0) break
+                actionLog += "\nYou attack with your " + playerWeapon.name + " for " + playerDamage + decorateDamage(playerDamage)
+                nodeHP += -playerDamage
+                    if (nodeHP <= 0) break
+            }
+
+            // If player loses, give ḇ to node and deduct from players
+            if (playerHP <= 0) { 
+                var ḇAmount = random.int(1,5)
+                actionLog += "\n\nYou lose! The `" + world.nodes[nodeIndex].name + "` takes `" + ḇAmount + "ḇ` from you."
+                world.nodes[nodeIndex].ḇ += ḇAmount
+                world.nodes[playerIndex].ḇ += -ḇAmount
+            }
+            else if (nodeHP <= 0) {
+                var ḇAmount = random.int(1,5)
+                actionLog += "\n\nYou win! You take`" + ḇAmount + "ḇ` from the `" + world.nodes[nodeIndex].name + "`."
+                world.nodes[nodeIndex].ḇ += -ḇAmount
+                world.nodes[playerIndex].ḇ += ḇAmount
+            }
+
+            replyUser(message, await generateEmbed('Fight with ' + world.nodes[nodeIndex].name + " #" + world.nodes[nodeIndex].id, actionLog, colors.success), true)
         }
         
         // Describe a node
@@ -368,7 +399,7 @@ client.on("messageCreate", async (message) => {
             // Define 'system' character in case no character found
             var character = {
                 name:'Enward',
-                description:'Enward is a yellow guy with a smile and large, beckoning eyes.'
+                description:'Enward is a yellow guy with a smile and large, beckoning eyes. He is well-mannered and respectful of others, but still willing to engage in silliness.'
             }
 
             var exitLoop = false

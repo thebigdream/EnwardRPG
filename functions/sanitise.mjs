@@ -30,10 +30,7 @@ export function sanitise(str) {
 
         // Remove impersonate
         str = str.replace(/\([^:]*:\s/g, '');
-
-        // Remove ` characters
-        str = str.replace( /`/g, "");
-
+        
         // Replace b with brachoin
         str = str.replace(/ḇ/g, ' brahcoin');
 
