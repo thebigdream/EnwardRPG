@@ -120,6 +120,12 @@ client.on("messageCreate", async (message) => {
             var itemIndex = await validateInput(message, 2)
             if (!itemIndex) return
 
+            // Check that node isn't a player
+            if (world.nodes[itemIndex].type == 'player') {
+                replyUser(message, await generateEmbed('Error', '`' + world.nodes[itemIndex].name + '` cannot be bought as they are a player.', colors.alert), true)
+                return
+            }
+
             // Check that node isn't owned by a player
             if (world.nodes[itemIndex].owner != null) {
                 var ownerIndex = world.nodes.findIndex(node => node.id === world.nodes[itemIndex].owner)
@@ -188,6 +194,12 @@ client.on("messageCreate", async (message) => {
             // Search for node, return if none found
             var nodeIndex = await validateInput(message, 2)
             if (!nodeIndex) return
+
+            // Check that node isn't a player
+            if (world.nodes[nodeIndex].type == 'player') {
+                replyUser(message, await generateEmbed('Error', '`' + world.nodes[nodeIndex].name + '` cannot be fought as they are a player.', colors.alert), true)
+                return
+            }
 
             // Check that player has > 0 items
             var playerItemsCount = world.nodes.filter(node => node.owner === world.nodes[playerIndex].id).length
@@ -283,6 +295,12 @@ client.on("messageCreate", async (message) => {
             var shopIndex = await validateInput(message, 2)
             if (!shopIndex) return
 
+            // Check that node isn't a player
+            if (world.nodes[shopIndex].type == 'player') {
+                replyUser(message, await generateEmbed('Error', '`' + world.nodes[shopIndex].name + '` cannot be used as a shop as they are a player.', colors.alert), true)
+                return
+            }
+
             // Generate description if none exists
             if (world.nodes[shopIndex].description == null) world.nodes[shopIndex].description = await generateDescription(world.nodes[shopIndex])
 
@@ -350,7 +368,7 @@ client.on("messageCreate", async (message) => {
             // Define 'system' character in case no character found
             var character = {
                 name:'Enward',
-                description:'Enward is a yellow guy with a mischevious smile and large, beckoning eyes.'
+                description:'Enward is a yellow guy with a smile and large, beckoning eyes.'
             }
 
             var exitLoop = false
