@@ -447,13 +447,11 @@ export function getId() {
     const randomID = randomLetter + randomNumber
   
     // Check if the random ID already exists in the array
-    if (ids.includes(randomID)) {
-      // If it exists, recursively call the function to generate a new random ID
-      return getId()
+    for (let i = 0; i < world.nodes.length; i++) {
+        if (world.nodes[i].id === randomID) {
+            return getId()
+        }
     }
-  
-    // If the random ID doesn't exist, push it to the array
-    ids.push(randomID)
   
     // Return the generated random ID
     return randomID
