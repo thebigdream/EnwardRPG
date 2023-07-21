@@ -17,15 +17,15 @@ import fs from 'fs'
 export const colors = { info:"#2596be", alert:"#D0342C", success:"#ffcc5f" }
 export var ids = [] //list of all ids in use
 export const rarities = [ 
-    { name: 'junk', cutoff: 10 },
+    { name: 'junk', cutoff: 0 },
     { name: 'common', cutoff: 20 },
-    { name: 'uncommon', cutoff: 30 },
-    { name: 'epic', cutoff: 40 },
-    { name: 'rare', cutoff: 50 },
-    { name: 'relic', cutoff: 60 },
-    { name: 'mythical', cutoff: 70 },
-    { name: 'legendary', cutoff: 80 },
-    { name: 'godlike', cutoff: 90 },
+    { name: 'uncommon', cutoff: 40 },
+    { name: 'epic', cutoff: 60 },
+    { name: 'rare', cutoff: 75 },
+    { name: 'relic', cutoff: 80 },
+    { name: 'mythical', cutoff: 85 },
+    { name: 'legendary', cutoff: 90 },
+    { name: 'godlike', cutoff: 95 },
     { name: 'transcendent', cutoff: 99 }, 
 ]
 
@@ -219,7 +219,7 @@ client.on("messageCreate", async (message) => {
             world.nodes.forEach((node) => { if (node.owner == world.nodes[nodeIndex].id) nodeWeapons.push(node) })
 
             // Give generic fist weapon if none available
-            var fist = { name:'fists', rarity:5 }
+            var fist = { name:'fists', rarity:50 }
             if (playerWeapons.length == 0) playerWeapons.push(fist)
             if (nodeWeapons.length == 0) nodeWeapons.push(fist)
 
