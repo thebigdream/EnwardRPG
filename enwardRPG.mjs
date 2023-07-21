@@ -17,11 +17,16 @@ import fs from 'fs'
 export const colors = { info:"#2596be", alert:"#D0342C", success:"#ffcc5f" }
 export var ids = [] //list of all ids in use
 export const rarities = [ 
-    { name: 'common', cutoff: 0 },
-    { name: 'uncommon', cutoff: 50 },
-    { name: 'rare', cutoff: 75 },
-    { name: 'epic', cutoff: 85 },
-    { name: 'relic', cutoff: 99 } 
+    { name: 'junk', cutoff: 10 },
+    { name: 'common', cutoff: 20 },
+    { name: 'uncommon', cutoff: 30 },
+    { name: 'epic', cutoff: 40 },
+    { name: 'rare', cutoff: 50 },
+    { name: 'relic', cutoff: 60 },
+    { name: 'mythical', cutoff: 70 },
+    { name: 'legendary', cutoff: 80 },
+    { name: 'godlike', cutoff: 90 },
+    { name: 'transcendent', cutoff: 99 }, 
 ]
 
 // GLOBALS
