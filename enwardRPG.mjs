@@ -246,14 +246,12 @@ client.on("messageCreate", async (message) => {
             if (playerHP <= 0) { 
                 var ḇAmount = random.int(1,5)
                 actionLog += "\n\nYou lose! The `" + world.nodes[nodeIndex].name + "` takes `" + ḇAmount + "ḇ` from you."
-                world.nodes[nodeIndex].ḇ += ḇAmount
                 world.nodes[playerIndex].ḇ += -ḇAmount
                 replyColor = colors.alert
             }
             else if (nodeHP <= 0) {
                 var ḇAmount = random.int(1,5)
                 actionLog += "\n\nYou win! You take `" + ḇAmount + "ḇ` from the `" + world.nodes[nodeIndex].name + "`."
-                world.nodes[nodeIndex].ḇ += -ḇAmount
                 world.nodes[playerIndex].ḇ += ḇAmount
                 replyColor = colors.success
             }
