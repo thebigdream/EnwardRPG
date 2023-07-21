@@ -45,6 +45,7 @@ export function generateNode(name, type, minVal, maxVal, origin, owner, id) {
             ḇ:random.int(minVal,maxVal),
             origin:origin,
             owner:owner,
+            flags:[],
         })
     // Increase value based on rarity
     node.ḇ = Math.round(node.ḇ + (node.ḇ * (node.rarity / 25)))
@@ -70,7 +71,7 @@ export async function list(prompt, num) {
 
     // Trim list
     list = list.split(',')
-    list.splice(num)
+    list = list.splice(0, num)
     if (num == 1) list = list[0] //don't return as array if one requested
 
     // Return list

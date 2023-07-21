@@ -24,8 +24,7 @@ export async function generateWorld(ids) {
     // Generate shops
     var businesses = await list("[Shops you'd find in a city]Frank's Department Store,McDonalds,Workman's Warehouse,Barber Shop,Arizon Accountancy,Maria's Cafe,Gruesome Gun Store,[shops you'd find in a forest]Elven Wood Supplies,Bowmaker,Eladir's Alchemy Supplies,Berries Berries & Berries,Wandering Trader,Shop Inside A Tree,[Shops you'd find in a demonic realm]Pain R Us,Wilson's Whips,Fire and Brimstone,Smoked Meats,Flame Emporium,666 Cigarettes,Eternal Torment Insurance,[Shops you'd find in a " + world.name + "]", random.int(4,8))
     for (var i = 0; i < businesses.length; i++) {
-        businesses[i] = await generateNode(sanitise(businesses[i]), 'business', 500, 2500, world.name, null)
-        world.nodes.push(businesses[i])
+        world.nodes.push(await generateNode(sanitise(businesses[i]), 'business', 500, 2500, world.name, null))
     }
 
     // Generate characters
