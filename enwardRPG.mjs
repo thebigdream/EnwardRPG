@@ -214,7 +214,7 @@ client.on("messageCreate", async (message) => {
             world.nodes.forEach((node) => { if (node.owner == world.nodes[nodeIndex].id) nodeWeapons.push(node) })
 
             // Give generic fist weapon if none available
-            var fist = { name:'fists', rarity:50 }
+            var fist = { name:'fists', rarity:50, ḇ:100 }
             if (playerWeapons.length == 0) playerWeapons.push(fist)
             if (nodeWeapons.length == 0) nodeWeapons.push(fist)
 
@@ -223,6 +223,15 @@ client.on("messageCreate", async (message) => {
                 if (num == 0) return '🛡️'
                 if (num <= 5) return '❤️'
                 if (num <= 100) return '💔'
+            }
+
+            // Generate a reward
+            function getReward(weapons) {
+                var difficulty = 0
+                for (var i = 0; i < weapons.length; i++) {
+                    difficulty += weapons[i].rarity
+                }
+                return Math.round((difficulty/weapons.length)/20) //return reward
             }
 
             // Generate fight
@@ -244,15 +253,13 @@ client.on("messageCreate", async (message) => {
 
             // If player loses, give ḇ to node and deduct from players
             if (playerHP <= 0) { 
-                var ḇAmount = random.int(1,5)
-                actionLog += "\n\nYou lose! The `" + world.nodes[nodeIndex].name + "` takes `" + ḇAmount + "ḇ` from you."
-                world.nodes[playerIndex].ḇ += -ḇAmount
+                actionLog += "\n\nYou lose! The `" + world.nodes[nodeIndex].name + "` takes `" + getReward(playerWeapons) + "ḇ` from you."
+                world.nodes[playerIndex].ḇ += -getReward(playerWeapons)
                 replyColor = colors.alert
             }
             else if (nodeHP <= 0) {
-                var ḇAmount = random.int(1,5)
-                actionLog += "\n\nYou win! You take `" + ḇAmount + "ḇ` from the `" + world.nodes[nodeIndex].name + "`."
-                world.nodes[playerIndex].ḇ += ḇAmount
+                actionLog += "\n\nYou win! You take `" + getReward(nodeWeapons) + "ḇ` from the `" + world.nodes[nodeIndex].name + "`."
+                world.nodes[playerIndex].ḇ += getReward(nodeWeapons)
                 replyColor = colors.success
             }
 

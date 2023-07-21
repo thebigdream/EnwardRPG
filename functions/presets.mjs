@@ -41,6 +41,7 @@ export const defaultDescPresetClio = {
         [8209], //!!!s
         [8958], //author
         [10601], //.[
+        [10681], //][
         [15614], //Author
         [20932], // ..
         [32303], //]:
@@ -111,6 +112,7 @@ export const defaultPresetClio = {
         [8209], //!!!s
         [8958], //author
         [10601], //.[
+        [10681], //][
         [15033], //.]
         [15614], //Author
         [20932], // ..
@@ -191,6 +193,7 @@ export const defaultListPresetClio = {
         [8209], //!!!s
         [8958], //author
         [10601], //.[
+        [10681], //][
         [15033], //.]
         [15614], //Author
         [20932], // ..
