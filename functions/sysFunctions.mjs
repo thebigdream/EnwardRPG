@@ -35,7 +35,7 @@ export async function summariseWorld(world) {
 }
 
 // Generate node
-export function generateNode(name, type, minVal, maxVal, origin, owner, id) {
+export function generateNode(name, type, minVal, maxVal, origin, owner) {
     var node = ({
             name:name,
             description:null,
@@ -45,7 +45,6 @@ export function generateNode(name, type, minVal, maxVal, origin, owner, id) {
             ḇ:random.int(minVal,maxVal),
             origin:origin,
             owner:owner,
-            flags:[],
         })
     // Increase value based on rarity
     node.ḇ = Math.round(node.ḇ + (node.ḇ * (node.rarity / 25)))
@@ -61,18 +60,20 @@ export async function generateDescription(node) {
 
 export async function list(prompt, num) {
     var list
+    var generated
 
     // Generate list
-    for (var generated = false; generated!= true;) {
+    while (!generated) {
         list = await generateMessage(prompt, 'clio-v1', defaultListPresetClio)
         if (list != undefined && list.includes(',') && !list.includes('.') && !list.includes('!') && !list.includes('?') && !list.includes('[') && !list.includes(']') && list.length > num) {
             generated = true
-    }}
+        } else list = ""
+    }
 
     // Trim list
     list = list.split(',')
     list = list.splice(0, num)
-    if (num == 1) list = list[0] //don't return as array if one requested
+    if (num == 1) list = list[0] //don't return as array if just one requested
 
     // Return list
     return list
@@ -92,4 +93,13 @@ export async function useNode(object, action) {
     var useMessage = await generateMessage('[Action:Fire|Thing:Gun]You fire the gun at an opposing soldier, wounding him in the arm. He falls to the ground, screaming in agony. You kick his weapon away.[Action:Sing a song to|Thing:Dog]A beautiful song erupts from your lips. The dog\'s ears perk up, and it begins bobbing its head to every note. You can\'t believe how good you sound.\n[Action:Release|Item:Thing]:You release the bird into the wild, watching as it flies upward into the cloud. Tears well in your eyes, it is so immeasurably beautiful being among nature.[Action:Visit|Thing:Iraq]You board a flight to the Northern provinces of Iraq. The mountains there are beautiful, and a guide shows you around to hidden and ancient places. You feel rewarded for undertaking such an adventure.[Action:Do the Moonwalk|Thing:Funeral]You want to dance so badly that in spite of your good conscience, you stand up in the middle of the funeral and begin moonwalking down the aisle. The bereaved are torn between being outraged by your impetuity or amazed by your dance moves. They settle for standing there with their mouths agape until you are done.[Action:Eat|Thing:Drywall]It\'s been awhile since the last ate, and so you walk over to your favourite drywall and take a large chomp out of it. The taste is indescribable. You love drywall. You just hope no one saw you do it.[Action:' + action + '|Thing:' + object + ' :]', 'clio-v1', defaultDescPresetClio)    
     useMessage = truncate(useMessage, 3, 4)
     return useMessage
+}
+
+// Get node name or return N/A
+export function getName(nodes, id) {
+    var name
+    nodes.forEach((node) => { if (node.id == id) name = node.name })
+    if (name == undefined) name = "N/A"
+    console.log(name)
+    return name
 }

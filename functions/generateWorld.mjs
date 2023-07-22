@@ -1,9 +1,6 @@
 // IMPORTS
 import random  from 'random';
-import { defaultListPresetClio, defaultDescPresetClio } from "./presets.mjs"
-import { generateMessage } from "./generateMessage.mjs"
 import { sanitise } from "./sanitise.mjs"
-import { truncate } from "./truncate.mjs"
 import { generateNode, generateDescription, list } from "./sysFunctions.mjs"
 import { getId } from "../../NovelAPI/enwardRPG.mjs";
 
@@ -18,11 +15,11 @@ export async function generateWorld(ids) {
         id:getId(),
     }
 
-    // Generate possible worlds
-    world.name = await list("[locations]Alternate Earth,Iceworld,Moon,The Back of a Giant Turtle,Overmined Asteroid,Waterworld,Vibrant Undercity,Cloud Kingdom,Alternate Dimension,Cotton Candy World,Ethereal Realm of Magical Flora,A Giant Jellyfish,Tropical Island,Mushroom Kingdom,Inside the Mind of an Animal,Cratered Mars Surface,Desert,Winding Mountain Range,Decadent Republic,Active Volcano,Beautiful Archipelago,Desert,Post-apocalyptic Landscape,Heaven,Demonic Realm,Sprawling Metropolis,Tropical Monkey Island Paradise,Cyberpunk City,Distant Outpost,Fishing Town,Realm of the Mad King,Virtual Paradise,Deep Black Forest,Floating Islands,",1)
+    // Generate world name
+    world.name = await list("[locations]Alternate Earth,Iceworld,Moon,The Back of a Giant Turtle,Overmined Asteroid,Waterworld,Vibrant Undercity,Cloud Kingdom,Alternate Dimension,Cotton Candy World,Ethereal Realm of Magical Flora,A Giant Jellyfish,Tropical Island,Mushroom Kingdom,Inside the Mind of an Animal,Cratered Mars Surface,Desert,Oligarch's Island,San Francisco,Winding Mountain Range,Vibrant Oasis,A Thousand Floating Islands,Paris (France),Cyberpunk Beijing,Decadent Republic,Active Volcano,Beautiful Archipelago,Desert,Post-apocalyptic Landscape,Heaven,Inside the Human Mind,Demonic Realm,Sprawling Metropolis,Tropical Monkey Island Paradise,Cyberpunk City,Distant Outpost,Fishing Town,Realm of the Mad King,Virtual Paradise,Deep Black Forest,Floating Islands,",1)
 
     // Generate shops
-    var businesses = await list("[Shops you'd find in a city]Frank's Department Store,McDonalds,Workman's Warehouse,Barber Shop,Arizon Accountancy,Maria's Cafe,Gruesome Gun Store,[shops you'd find in a forest]Elven Wood Supplies,Bowmaker,Eladir's Alchemy Supplies,Berries Berries & Berries,Wandering Trader,Shop Inside A Tree,[Shops you'd find in a demonic realm]Pain R Us,Wilson's Whips,Fire and Brimstone,Smoked Meats,Flame Emporium,666 Cigarettes,Eternal Torment Insurance,[Shops you'd find in a " + world.name + "]", random.int(4,8))
+    var businesses = await list("[Shops you'd find in a city]Frank's Department Store,McDonalds,Workman's Warehouse,Barber Shop,Arizon Accountancy,Maria's Cafe,Gruesome Gun Store,[Shops you'd find in a human]Hanson's Hearts,The Inner Veinway,Bargain Organs,Meat Mania,Hands&Feet,[Shops you'd find in a forest]Elven Wood Supplies,Bowmaker,Eladir's Alchemy Supplies,Berries Berries & Berries,Wandering Trader,Shop Inside A Tree,[Shops you'd find in a demonic realm]Pain R Us,Wilson's Whips,Fire and Brimstone,Smoked Meats,Flame Emporium,666 Cigarettes,Eternal Torment Insurance,[Shops you'd find in a " + world.name + "]", random.int(4,8))
     for (var i = 0; i < businesses.length; i++) {
         world.nodes.push(await generateNode(sanitise(businesses[i]), 'business', 500, 2500, world.name, null))
     }
