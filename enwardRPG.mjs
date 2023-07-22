@@ -265,12 +265,17 @@ client.on("messageCreate", async (message) => {
         }
         
         // Inspect a node
-        else if (message.content.includes('!inspect|')) {
+        else if (message.content.includes('!inspect')) {
             var inventory = ""
 
-            // Search for node, return if none found
-            var nodeIndex = await validateInput(message, 2)
-            if (!nodeIndex) return
+            //Assume searching for self
+            nodeIndex = playerIndex
+
+            //If bar included, search for node instead
+            if (message.content.includes('!inspect|')) {
+                var nodeIndex = await validateInput(message, 2)
+                if (!nodeIndex) return
+            }
 
             // Generate description if not available
             if (world.nodes[nodeIndex].description == null) world.nodes[nodeIndex].description = await generateDescription(world.nodes[nodeIndex])
