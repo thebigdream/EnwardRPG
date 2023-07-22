@@ -5,7 +5,7 @@ import { generateNode, generateDescription, list } from "./sysFunctions.mjs"
 import { getId } from "../../NovelAPI/enwardRPG.mjs";
 
 // EXPORTS
-export async function generateWorld(ids) {
+export async function generateWorld() {
     // Start world from scratch
     var world = {
         name:null,
@@ -21,24 +21,24 @@ export async function generateWorld(ids) {
     // Generate shops
     var businesses = await list("[Shops you'd find in a city]Frank's Department Store,McDonalds,Workman's Warehouse,Barber Shop,Arizon Accountancy,Maria's Cafe,Gruesome Gun Store,[Shops you'd find in a human]Hanson's Hearts,The Inner Veinway,Bargain Organs,Meat Mania,Hands&Feet,[Shops you'd find in a forest]Elven Wood Supplies,Bowmaker,Eladir's Alchemy Supplies,Berries Berries & Berries,Wandering Trader,Shop Inside A Tree,[Shops you'd find in a demonic realm]Pain R Us,Wilson's Whips,Fire and Brimstone,Smoked Meats,Flame Emporium,666 Cigarettes,Eternal Torment Insurance,[Shops you'd find in a " + world.name + "]", random.int(4,8))
     for (var i = 0; i < businesses.length; i++) {
-        world.nodes.push(await generateNode(sanitise(businesses[i]), 'business', 500, 2500, world.name, null))
+        world.nodes.push(await generateNode(sanitise(businesses[i]), 'business', 500, 2500, world.id, null))
     }
 
     // Generate characters
     var characters = await list("[Characters you'd find in a city]Scheming Businessman,Police Officer Fresh From the Academy,Opinionated Pizza Shop Owner,Overworked Delivery Driver,Expert Barista,Civilian,Highly Efficient Traffic Controller,Just a Man,Woman out for a Walk,Exotic Dancer,Celebrity Who You Can't Recall the Name Of,Former President,Shop Assistant,Finely Dressed Mafioso,Trucker Chatting to a Friend,[Characters you'd find in a forest]Elven Archer,Gnome Explorer,Living Mushroom Creature,Alchemist Witch,Shady Ranger,Wandering Trader Who Sells Beads,Grizzled Mountain Man,Centaur,Monk Trying To Become Enlightened,[Characters you'd find in a military base]Patrolling Soldier,Cagey Sniper,Cook Who Is Busy,Desparate Prisoner,Guard (Private Company),Visiting Diplomat,5-Star General,Bored Admin Clerk,Disinterested Construction Worker,[Characters you'd find in a " + world.name + "]",random.int(4,8))
     for (var i = 0; i < characters.length; i++) {
-        world.nodes.push(await generateNode(sanitise(characters[i]), 'character', 250, 500, world.name, null))
+        world.nodes.push(await generateNode(sanitise(characters[i]), 'character', 250, 500, world.id, null))
     }
 
     // Generate landmarks
     var landmarks = await list("[Landmarks you'd find in a city]Post Office,Large Mansion,Skyscraper,Park,Suburban House,Art Gallery,Oppulent Church,Town Square,Historic Building,[Landmarks you'd find in a demonic realm]Demonic Castle,Evil Mountain,Burnt House,Menacing Church,Graveyard,Gallows,Torture Chamber,Portal[Landmarks you'd find in a fairy land]Fairy Castle,Bubblegum House,Edible Manor,Spacious Witch's Hut,Magical Garden,Unicorn Stables,Fairy Queen's Abode,Whimsical Alley,[Landmarks you'd find in a " + world.name + "]",random.int(4,8))
     for (var i = 0; i < landmarks.length; i++) {
-        world.nodes.push(await generateNode(sanitise(landmarks[i]), 'landmark', 500, 2500, world.name, null))
+        world.nodes.push(await generateNode(sanitise(landmarks[i]), 'landmark', 500, 2500, world.id, null))
     }
 
     // Generate description of world
     world.description = await generateDescription(world)
 
-    console.log(world)
+    //console.log(world)
     return world
 }

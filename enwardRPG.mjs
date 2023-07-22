@@ -57,6 +57,9 @@ const client = new Client({
 client.on("ready", async () => {
     channel = client.channels.cache.get(channelID) // decide channel
     await channel.send({ embeds: [await generateEmbed('What\'s that?', 'A wild `Cunt` appears!', colors.info)] })
+
+    //FIX SCRIPT, REMOVE WHEN DONE
+    //world.nodes.forEach((node) => { if (node.origin) node.origin = "B0000", console.log(node) })
  })
 
 // EVENTS
@@ -75,6 +78,7 @@ setInterval(async() => {
         var newWorld = await generateWorld()
                 world.name = newWorld.name
                 world.description = newWorld.description
+                world.id = newWorld.id
                 for(var i = 0; i < newWorld.nodes.length; i++) world.nodes.push(newWorld.nodes[i])
 
         // Send summary to channel
@@ -306,7 +310,7 @@ client.on("messageCreate", async (message) => {
                 'Owner', 
                 getName(world.nodes, world.nodes[nodeIndex].owner),
                 'Origin', 
-                world.nodes[nodeIndex].origin,
+                getName(world.nodes, world.nodes[nodeIndex].owner),
                 colors.info), 
                 true
             )}
@@ -319,6 +323,7 @@ client.on("messageCreate", async (message) => {
             var newWorld = await generateWorld()
                 world.name = newWorld.name
                 world.description = newWorld.description
+                world.id = newWorld.id
                 for(var i = 0; i < newWorld.nodes.length; i++) world.nodes.push(newWorld.nodes[i])
 
             // Send summary

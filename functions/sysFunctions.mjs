@@ -9,25 +9,25 @@ import { getId, rarities } from "../../NovelAPI/enwardRPG.mjs"
 import { colors } from "../../NovelAPI/enwardRPG.mjs"
 
 // Provide an embedded summary of the world
-export async function summariseWorld(world) {
+export async function summariseWorld(world) {   
         var title = world.name
         var description = world.description
         var col1Title = 'Landmarks'
         var col1Desc = ""
             world.nodes.forEach((node) => {
-                if ((node.type == 'landmark') && node.origin == world.name) col1Desc += node.name + " `#" + node.id + "`\n"
+                if ((node.type == 'landmark') && node.origin == world.id) col1Desc += node.name + " `#" + node.id + "`\n"
             })
             if (col1Desc == "") col1Desc = "null"
         var col2Title = 'NPCs'
         var col2Desc = ""
             world.nodes.forEach((node) => {
-                if ((node.type == 'character') && node.origin == world.name) col2Desc += node.name + " `#" + node.id + "`\n"
+                if ((node.type == 'character') && node.origin == world.id) col2Desc += node.name + " `#" + node.id + "`\n"
             })
             if (col2Desc == "") col2Desc = "null"
         var col3Title = 'Businesses'
         var col3Desc = ""
             world.nodes.forEach((node) => {
-                if ((node.type == 'business') && node.origin == world.name) col3Desc += node.name + " `#" + node.id + "`\n"
+                if ((node.type == 'business') && node.origin == world.id) col3Desc += node.name + " `#" + node.id + "`\n"
             })
             if (col3Desc == "") col3Desc = "null"
         var embed = await generate3ColumnEmbed(title, description, col1Title, col1Desc, col2Title, col2Desc, col3Title, col3Desc, colors.info)  
