@@ -292,12 +292,6 @@ client.on("messageCreate", async (message) => {
             // Log inventory
             world.nodes.forEach((node) => { if (node.owner == world.nodes[nodeIndex].id) inventory += "\n" + node.name + " `" + node.ḇ + "ḇ` `#" + node.id + "`" + " `" + getRarity(node.rarity) + "`" })
 
-            // Log origin
-            console.log(getName(world.nodes, world.nodes[nodeIndex].owner))
-            console.log(getName(world.nodes, world.nodes[nodeIndex].origin))
-
-            try { world.nodes.forEach((node) => { if (node.id == world.nodes[nodeIndex].id) console.log(JSON.stringify(node)) }) } catch { return }
-
             replyUser(message, await generate3Column2RowsEmbed(
                 world.nodes[nodeIndex].name, 
                 world.nodes[nodeIndex].description + "\n\n**Inventory**" + inventory + "\n ᲼᲼",
@@ -394,13 +388,18 @@ client.on("messageCreate", async (message) => {
             var exitLoop = false
             while (typeof query !== 'undefined' && !exitLoop) { //so long as query does not fail to find another message, and exitloop flag hasn't been triggered
                 try { 
-
                     //If a talk request is found, log the character and quit, otherwise log the message
                     if (query.content.includes('!talk|')) {
                         var searchId = query.content.split('!talk|')[1]
                         var result = ""
                         try { world.nodes.forEach((node) => { if (node.id == searchId) character = node; exitLoop = true }) } catch { return }
-                    } else { prompt.unshift(sanitise(query.author) + ': ' + sanitise(query.content)) }
+                    } 
+                    
+                    //If a command, exit loop
+                    else if (commands.some((command) => query.content.includes(command.name))) exitLoop = true 
+
+                    //Log unless part of the talk response
+                    else if (!query.content.includes('You are now chatting with')) prompt.unshift(sanitise(query.author) + ': ' + sanitise(query.content))
 
                     query = messages.find(function(messages) { return messages.id === query.parent.messageId })
                 } 
@@ -412,7 +411,7 @@ client.on("messageCreate", async (message) => {
             // Enter character description, then chat history, then prime their latest response
             prompt = prompt.join("\n")
             prompt = prompt.replace(/Enward:/g, character.name + ':')
-            prompt = '[' + character.description + ']\n' + prompt + '\n' + character.name + '[replying to ' + message.member.nickname + ']:'
+            prompt = '[' + character.name + '. ' + character.description + ']\n' + prompt + '\n' + character.name + '[replying to ' + message.member.nickname + ']:'
 
             //console.clear()
             console.log(prompt)

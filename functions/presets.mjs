@@ -73,7 +73,7 @@ export const defaultDescPresetClio = {
 export const defaultPresetClio = {
     "ban_brackets": true,
     "use_string": true,
-    "repetition_penalty": 3.5,
+    "repetition_penalty": 3.75,
     "repetition_penalty_frequency": 0,
     "repetition_penalty_presence": 0,
     "repetition_penalty_range": 2000,
